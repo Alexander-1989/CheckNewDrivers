@@ -52,7 +52,7 @@ namespace CheckNewDrivers
         private static void GetContent(IDomElement element, List<Item> drivers)
         {
             const string prefix = "PC v";
-            string content = element.TextContent;
+            string content = element.InnerText;
 
             if (content.Contains(prefix) && !content.Contains("."))
             {
