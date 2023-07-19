@@ -116,15 +116,24 @@ namespace CheckNewDrivers
                     Console.WriteLine("Press 'D' for download a new version or 'O' for visit a website page.");
 
                     char inputChar = Console.ReadKey(true).KeyChar;
-                    if (inputChar == 'd' || inputChar == 'в' || inputChar == 'D' || inputChar == 'В')
+                    switch (inputChar)
                     {
-                        string fileName = $"MOTU M Series Installer ({productVersion.Version}).exe";
-                        Download(productVersion.Href, fileName);
-                    }
-                    else if (inputChar == 'o' || inputChar == 'щ' || inputChar == 'O' || inputChar == 'Щ')
-                    {
-                        Console.WriteLine("Opening website.");
-                        Process.Start(url);
+                        case 'd':
+                        case 'в':
+                        case 'D':
+                        case 'В':
+                            string fileName = $"MOTU M Series Installer ({productVersion.Version}).exe";
+                            Download(productVersion.Href, fileName);
+                            break;
+                        case 'o':
+                        case 'щ':
+                        case 'O':
+                        case 'Щ':
+                            Console.WriteLine("Opening website.");
+                            Process.Start(url);
+                            break;
+                        default:
+                            break;
                     }
                 }
                 else

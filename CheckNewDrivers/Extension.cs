@@ -7,7 +7,7 @@ namespace CheckNewDrivers
         public static T First<T>(this IEnumerable<T> items)
         {
             IEnumerator<T> enumerator = items?.GetEnumerator();
-            return enumerator != null && enumerator.MoveNext() ? enumerator.Current : default;
+            return enumerator == null || !enumerator.MoveNext() ? default : enumerator.Current;
         }
     }
 }
