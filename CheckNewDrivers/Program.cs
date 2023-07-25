@@ -13,6 +13,44 @@ namespace CheckNewDrivers
     {
         private static readonly WebClient webClient = new WebClient();
 
+        private static string GetRootAddress(string url)
+        {
+            string domain = ".com";
+            int index = url.IndexOf(domain);
+
+            if (index > -1)
+            {
+                return url.Substring(0, index + domain.Length);
+            }
+
+            return string.Empty;
+        }
+
+        private static string CombineAddress(string url, string path)
+        {
+            string rootUrl = GetRootAddress(url);
+            return path.StartsWith('/') ? rootUrl + path : rootUrl + '/' + path;
+        }
+
+        private static string ReadUrlFromFile(string fileName, string defaultValue)
+        {
+            if (File.Exists(fileName))
+            {
+                try
+                {
+                    using (StreamReader streamReader = new StreamReader(fileName))
+                    {
+                        if (!streamReader.EndOfStream)
+                        {
+                            return streamReader.ReadLine();
+                        }
+                    }
+                }
+                catch (Exception) { }
+            }
+            return defaultValue;
+        }
+
         private static string GetFileVersions(string path)
         {
             const string partOfName = "MOTU M Series Installer";
@@ -38,12 +76,11 @@ namespace CheckNewDrivers
         private static string FindHref(IDomElement element)
         {
             const string className = "mobile-only";
-            const string address = "https://motu.com";
             for (IDomElement sibling = element; sibling != null; sibling = sibling.NextElementSibling)
             {
                 if (sibling.ClassName == className)
                 {
-                    return address + sibling.FirstElementChild.GetAttribute("href");
+                    return sibling.FirstElementChild.GetAttribute("href");
                 }
             }
             return string.Empty;
@@ -122,8 +159,9 @@ namespace CheckNewDrivers
                         case 'в':
                         case 'D':
                         case 'В':
+                            string href = CombineAddress(url, productVersion.Href);
                             string fileName = $"MOTU M Series Installer ({productVersion.Version}).exe";
-                            Download(productVersion.Href, fileName);
+                            Download(href, fileName);
                             break;
                         case 'o':
                         case 'щ':
@@ -166,10 +204,17 @@ namespace CheckNewDrivers
 
         static void Main()
         {
-            const string url = "https://motu.com/en-us/download/product/408/?download_type=driver&platform_family=win";
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
-            Console.WriteLine("Checking for new drivers. Waiting...");
-            CheckVersion(url);
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                Console.WriteLine("Checking for new drivers. Waiting...");
+                CheckVersion(ReadUrlFromFile("URL.txt", "https://motu.com/en-us/download/product/408/"));
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc.Message);
+            }
+
             WaitExit(5);
             Console.ReadKey();
         }
