@@ -211,8 +211,9 @@ namespace CheckNewDrivers
             try
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                string url = ReadUrlFromFile("URL.txt", "https://motu.com/en-us/download/product/408/");
                 Console.WriteLine("Checking for new drivers. Waiting...");
-                CheckVersion(ReadUrlFromFile("URL.txt", "https://motu.com/en-us/download/product/408/"));
+                CheckVersion(url);
             }
             catch (Exception exc)
             {
