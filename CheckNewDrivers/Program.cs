@@ -76,13 +76,17 @@ namespace CheckNewDrivers
         private static string FindHref(IDomElement element)
         {
             const string className = "mobile-only";
-            for (IDomElement sibling = element; sibling != null; sibling = sibling.NextElementSibling)
+            IDomElement current = element;
+
+            while (current != null)
             {
-                if (sibling.ClassName == className)
+                if (current.ClassName.Equals(className))
                 {
-                    return sibling.FirstElementChild.GetAttribute("href");
+                    return current.FirstElementChild.GetAttribute("href");
                 }
+                current = current.NextElementSibling;
             }
+
             return string.Empty;
         }
 
