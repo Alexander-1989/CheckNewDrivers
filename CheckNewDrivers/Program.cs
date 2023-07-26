@@ -70,7 +70,7 @@ namespace CheckNewDrivers
             }
 
             files.Sort((str1, str2) => string.Compare(str2, str1));
-            return files.First() ?? string.Empty;
+            return files.GetFirst() ?? string.Empty;
         }
 
         private static string FindHref(IDomElement element)
@@ -115,7 +115,7 @@ namespace CheckNewDrivers
             }
 
             drivers.Sort((item1, item2) => string.Compare(item2.Version, item1.Version));
-            return drivers.First();
+            return drivers.GetFirst();
         }
 
         private static void Download(string address, string fileName)
