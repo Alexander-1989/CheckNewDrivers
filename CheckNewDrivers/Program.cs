@@ -32,23 +32,25 @@ namespace CheckNewDrivers
             return path.StartsWith('/') ? rootUrl + path : rootUrl + '/' + path;
         }
 
-        private static string ReadUrlFromFile(string fileName, string defaultValue)
+        private static string ReadUrlFromFile(string fileName)
         {
-            if (File.Exists(fileName))
+            try
             {
-                try
+                using (StreamReader streamReader = new StreamReader(fileName))
                 {
-                    using (StreamReader streamReader = new StreamReader(fileName))
+                    if (!streamReader.EndOfStream)
                     {
-                        if (!streamReader.EndOfStream)
-                        {
-                            return streamReader.ReadLine();
-                        }
+                        return streamReader.ReadLine();
                     }
                 }
-                catch (Exception) { }
             }
-            return defaultValue;
+            catch (Exception) { }
+            return null;
+        }
+
+        private static string ReadUrlFromFile(string fileName, string defaultValue)
+        {
+            return ReadUrlFromFile(fileName) ?? defaultValue;
         }
 
         private static string GetFileVersions(string path)
@@ -208,10 +210,25 @@ namespace CheckNewDrivers
 
         static void Main()
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+            string fileName = Path.Combine(Environment.CurrentDirectory, "URL.txt");
+            string defaultURL = "https://motu.com/en-us/download/product/408/";
+
             try
             {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
-                string url = ReadUrlFromFile("URL.txt", "https://motu.com/en-us/download/product/408/");
+                string url = null;
+
+                if (File.Exists(fileName))
+                {
+                    Console.WriteLine("Read url address from URL.txt file...");
+                    url = ReadUrlFromFile(fileName);
+                }
+                else
+                {
+                    Console.WriteLine("Set default url address...");
+                    url = defaultURL;
+                }
+
                 Console.WriteLine("Checking for new drivers. Waiting...");
                 CheckVersion(url);
             }
