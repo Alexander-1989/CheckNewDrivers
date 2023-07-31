@@ -211,21 +211,20 @@ namespace CheckNewDrivers
         static void Main()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
-            string fileName = Path.Combine(Environment.CurrentDirectory, "URL.txt");
+            string fileName = "URL.txt";
             string defaultURL = "https://motu.com/en-us/download/product/408/";
+            Console.WriteLine($"Read url address from \"{fileName}\" file...");
 
             try
             {
                 string url = null;
-
                 if (File.Exists(fileName))
                 {
-                    Console.WriteLine("Read url address from URL.txt file...");
                     url = ReadUrlFromFile(fileName);
                 }
                 else
                 {
-                    Console.WriteLine("Set default url address...");
+                    Console.WriteLine($"File \"{fileName}\" not found. Set default url address...");
                     url = defaultURL;
                 }
 
