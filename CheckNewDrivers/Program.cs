@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -46,11 +47,6 @@ namespace CheckNewDrivers
             }
             catch (Exception) { }
             return null;
-        }
-
-        private static string ReadUrlFromFile(string fileName, string defaultValue)
-        {
-            return ReadUrlFromFile(fileName) ?? defaultValue;
         }
 
         private static string GetFileVersions(string path)
@@ -120,6 +116,25 @@ namespace CheckNewDrivers
             return drivers.GetFirst();
         }
 
+        static string GetProgressLine(int persent)
+        {
+            StringBuilder persentLine = new StringBuilder(20);
+
+            for (int i = 0; i < 20; i++)
+            {
+                if (i < persent / 5)
+                {
+                    persentLine.Append('#');
+                }
+                else
+                {
+                    persentLine.Append('-');
+                }
+            }
+
+            return persentLine.ToString();
+        }
+
         private static void Download(string address, string fileName)
         {
             int left = 0;
@@ -131,7 +146,7 @@ namespace CheckNewDrivers
                 int currentPercentage = e.ProgressPercentage;
                 if (currentPercentage != prevPercentage)
                 {
-                    Console.WriteLine($"Downloading {currentPercentage} %");
+                    Console.WriteLine($"Downloading {currentPercentage}% {GetProgressLine(currentPercentage)}");
                     Console.SetCursorPosition(left, top);
                     prevPercentage = currentPercentage;
                 }
@@ -207,7 +222,6 @@ namespace CheckNewDrivers
                 Environment.Exit(0);
             }).Start();
         }
-
         static void Main()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
