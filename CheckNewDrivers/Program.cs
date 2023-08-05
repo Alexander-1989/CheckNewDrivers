@@ -116,20 +116,14 @@ namespace CheckNewDrivers
             return drivers.GetFirst();
         }
 
-        static string GetProgressLine(int persent)
+        static string GetProgressLine(int percentage)
         {
             StringBuilder persentLine = new StringBuilder(20);
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 100 / 5; i++)
             {
-                if (i < persent / 5)
-                {
-                    persentLine.Append('#');
-                }
-                else
-                {
-                    persentLine.Append('-');
-                }
+                char ch = (i < percentage / 5) ? '#' : '-';
+                persentLine.Append(ch);
             }
 
             return persentLine.ToString();
