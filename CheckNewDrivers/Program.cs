@@ -131,7 +131,7 @@ namespace CheckNewDrivers
 
         private static void Download(string address, string fileName)
         {
-            int left = 0;
+            int left = Console.CursorLeft;
             int top = Console.CursorTop;
             int prevPercentage = -1;
 
@@ -221,7 +221,7 @@ namespace CheckNewDrivers
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
             string fileName = "URL.txt";
             string defaultURL = "https://motu.com/en-us/download/product/408/";
-            Console.WriteLine($"Read url address from \"{fileName}\" file...");
+            Console.Write($"Read url address from \"{fileName}\" file... ");
 
             try
             {
@@ -232,7 +232,7 @@ namespace CheckNewDrivers
                 }
                 else
                 {
-                    Console.WriteLine($"File \"{fileName}\" not found. Set default url address...");
+                    Console.WriteLine($"File not found. Set default url address...");
                     url = defaultURL;
                 }
 
