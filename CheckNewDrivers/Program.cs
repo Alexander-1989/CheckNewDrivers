@@ -77,7 +77,7 @@ namespace CheckNewDrivers
 
             while (current != null)
             {
-                if (current.ClassName.Equals(className))
+                if (current.ClassName.Equals(className) && current.FirstElementChild.HasAttribute("href"))
                 {
                     return current.FirstElementChild.GetAttribute("href");
                 }
@@ -131,9 +131,9 @@ namespace CheckNewDrivers
 
         private static void Download(string address, string fileName)
         {
-            int left = Console.CursorLeft;
-            int top = Console.CursorTop;
             int prevPercentage = -1;
+            int top = Console.CursorTop;
+            int left = Console.CursorLeft;
 
             webClient.DownloadProgressChanged += (s, e) =>
             {
@@ -202,8 +202,8 @@ namespace CheckNewDrivers
 
         static void WaitExit(int seconds)
         {
-            int left = Console.CursorLeft;
             int top = Console.CursorTop;
+            int left = Console.CursorLeft;
 
             new Task(() =>
             {
