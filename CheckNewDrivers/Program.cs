@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -118,15 +117,16 @@ namespace CheckNewDrivers
 
         static string GetProgressLine(int percentage)
         {
-            StringBuilder persentLine = new StringBuilder(20);
+            int lineLength = 25;
+            int percentPerSymbol = 100 / lineLength;
+            char[] percentLine = new char[lineLength];
 
-            for (int i = 0; i < 100 / 5; i++)
+            for (int i = 0; i < lineLength; i++)
             {
-                char ch = (i < percentage / 5) ? '#' : '-';
-                persentLine.Append(ch);
+                percentLine[i] = (i < (percentage / percentPerSymbol)) ? '#' : '-';
             }
 
-            return persentLine.ToString();
+            return new string(percentLine);
         }
 
         private static void Download(string address, string fileName)
