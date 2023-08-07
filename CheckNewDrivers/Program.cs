@@ -232,11 +232,11 @@ namespace CheckNewDrivers
                 }
                 else
                 {
-                    Console.WriteLine($"File not found. Set default url address...");
+                    Console.Write($"File not found. Set default url address...");
                     url = defaultURL;
                 }
 
-                Console.WriteLine("Checking for new drivers. Waiting...");
+                Console.WriteLine("\nChecking for new drivers. Waiting...");
                 CheckVersion(url);
             }
             catch (Exception exc)
