@@ -52,6 +52,7 @@ namespace CheckNewDrivers
         {
             const string partOfName = "MOTU M Series Installer";
             List<string> files = new List<string>();
+
             foreach (string file in Directory.GetFiles(path, "*.exe"))
             {
                 if (file.Contains(partOfName))
@@ -73,15 +74,13 @@ namespace CheckNewDrivers
         private static string FindHref(IDomElement element)
         {
             const string className = "mobile-only";
-            IDomElement current = element;
 
-            while (current != null)
+            for (IDomElement current = element; current != null; current = current.NextElementSibling)
             {
                 if (current.ClassName.Equals(className) && current.FirstElementChild.HasAttribute("href"))
                 {
                     return current.FirstElementChild.GetAttribute("href");
                 }
-                current = current.NextElementSibling;
             }
 
             return string.Empty;
