@@ -49,26 +49,30 @@ namespace CheckNewDrivers
             return null;
         }
 
+        private static bool IsDigit(char ch)
+        {
+            return ch >= '0' && ch <= '9';
+        }
+
         private static string NormalizeVersion(string version)
         {
-            int maxLength = 5;
-            StringBuilder newVersion = new StringBuilder();
+            StringBuilder newVersion = new StringBuilder(10);
             foreach (char ch in version)
             {
-                if (char.IsDigit(ch))
+                if (IsDigit(ch))
                 {
                     newVersion.Append(ch);
                 }
+                else if (ch == ' ')
+                {
+                    break;
+                }
             }
 
-            if (newVersion.Length <= maxLength)
-            {
-                return newVersion.ToString();
-            }
-            else
-            {
-                return newVersion.ToString(newVersion.Length - maxLength, maxLength);
-            }
+            int maxLength = 5;
+            int currentLength = newVersion.Length;
+
+            return currentLength <= maxLength ? newVersion.ToString() : newVersion.ToString(currentLength - maxLength, maxLength);
         }
 
         private static string GetFileVersions(string path)
@@ -86,7 +90,7 @@ namespace CheckNewDrivers
             }
 
             fileVersion.Sort((str1, str2) => string.Compare(str2, str1));
-            return fileVersion.GetFirst() ?? string.Empty;
+            return fileVersion.GetFirst() ?? "00000";
         }
 
         private static string FindHref(IDomElement element)
@@ -182,7 +186,8 @@ namespace CheckNewDrivers
                 else if (string.Compare(productVersion.Version, fileProductVersion) > 0)
                 {
                     Console.WriteLine("There is a NEW VERSION of drivers!!!");
-                    Console.WriteLine($"Your Version: {fileProductVersion}\t A New Version: {productVersion.Version}");
+                    Console.WriteLine($"Your Version: {fileProductVersion}");
+                    Console.WriteLine($"New Version:  {productVersion.Version}");
                     Console.WriteLine("Press 'D' for download a new version or 'O' for visit a website page.");
 
                     char inputChar = Console.ReadKey(true).KeyChar;
