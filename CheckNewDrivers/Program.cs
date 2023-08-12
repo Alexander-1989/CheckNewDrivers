@@ -182,8 +182,7 @@ namespace CheckNewDrivers
                 else if (string.Compare(productVersion.Version, fileProductVersion) > 0)
                 {
                     Console.WriteLine("There is a NEW VERSION of drivers!!!");
-                    Console.WriteLine($"Yout Version: {fileProductVersion}");
-                    Console.WriteLine($"New Version: {productVersion.Version}");
+                    Console.WriteLine($"Your Version: {fileProductVersion}\t A New Version: {productVersion.Version}");
                     Console.WriteLine("Press 'D' for download a new version or 'O' for visit a website page.");
 
                     char inputChar = Console.ReadKey(true).KeyChar;
@@ -235,6 +234,7 @@ namespace CheckNewDrivers
                 Environment.Exit(0);
             }).Start();
         }
+
         static void Main()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
