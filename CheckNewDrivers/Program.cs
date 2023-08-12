@@ -6,6 +6,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Text;
 
 namespace CheckNewDrivers
 {
@@ -48,27 +49,44 @@ namespace CheckNewDrivers
             return null;
         }
 
+        private static string NormalizeVersion(string version)
+        {
+            int maxLength = 5;
+            StringBuilder newVersion = new StringBuilder();
+            foreach (char ch in version)
+            {
+                if (char.IsDigit(ch))
+                {
+                    newVersion.Append(ch);
+                }
+            }
+
+            if (newVersion.Length <= maxLength)
+            {
+                return newVersion.ToString();
+            }
+            else
+            {
+                return newVersion.ToString(newVersion.Length - maxLength, maxLength);
+            }
+        }
+
         private static string GetFileVersions(string path)
         {
             const string partOfName = "MOTU M Series Installer";
-            List<string> files = new List<string>();
+            List<string> fileVersion = new List<string>();
 
             foreach (string file in Directory.GetFiles(path, "*.exe"))
             {
                 if (file.Contains(partOfName))
                 {
-                    int startIndex = file.LastIndexOf('(');
-                    int endIndex = file.LastIndexOf(')');
-
-                    if (startIndex > -1 && endIndex > startIndex)
-                    {
-                        files.Add(file.Substring(startIndex + 1, endIndex - startIndex - 1));
-                    }
+                    string version = NormalizeVersion(FileVersionInfo.GetVersionInfo(file).ProductVersion);
+                    fileVersion.Add(version);
                 }
             }
 
-            files.Sort((str1, str2) => string.Compare(str2, str1));
-            return files.GetFirst() ?? string.Empty;
+            fileVersion.Sort((str1, str2) => string.Compare(str2, str1));
+            return fileVersion.GetFirst() ?? string.Empty;
         }
 
         private static string FindHref(IDomElement element)
@@ -164,6 +182,8 @@ namespace CheckNewDrivers
                 else if (string.Compare(productVersion.Version, fileProductVersion) > 0)
                 {
                     Console.WriteLine("There is a NEW VERSION of drivers!!!");
+                    Console.WriteLine($"Yout Version: {fileProductVersion}");
+                    Console.WriteLine($"New Version: {productVersion.Version}");
                     Console.WriteLine("Press 'D' for download a new version or 'O' for visit a website page.");
 
                     char inputChar = Console.ReadKey(true).KeyChar;
