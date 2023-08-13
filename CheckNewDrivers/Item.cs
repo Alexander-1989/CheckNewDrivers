@@ -1,6 +1,8 @@
-﻿namespace CheckNewDrivers
+﻿using System;
+
+namespace CheckNewDrivers
 {
-    class Item
+    class Item : IComparable<Item>
     {
         public string Version { get; }
         public string Href { get; }
@@ -11,6 +13,11 @@
         {
             Version = version;
             Href = href;
+        }
+
+        public int CompareTo(Item other)
+        {
+            return Version.CompareTo(other.Version);
         }
 
         public override string ToString()

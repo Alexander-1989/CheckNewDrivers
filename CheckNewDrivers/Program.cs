@@ -75,6 +75,11 @@ namespace CheckNewDrivers
             return currentLength <= maxLength ? newVersion.ToString() : newVersion.ToString(currentLength - maxLength, maxLength);
         }
 
+        private static int OrderByDescending<T>(T a, T b) where T : IComparable<T>
+        {
+            return b.CompareTo(a);
+        }
+
         private static string GetFileVersions(string path)
         {
             const string partOfName = "MOTU M Series Installer";
@@ -89,7 +94,7 @@ namespace CheckNewDrivers
                 }
             }
 
-            fileVersion.Sort((str1, str2) => string.Compare(str2, str1));
+            fileVersion.Sort(OrderByDescending);
             return fileVersion.GetFirst() ?? "00000";
         }
 
@@ -132,7 +137,7 @@ namespace CheckNewDrivers
                 GetContent(item.NextElementSibling, drivers);
             }
 
-            drivers.Sort((item1, item2) => string.Compare(item2.Version, item1.Version));
+            drivers.Sort(OrderByDescending);
             return drivers.GetFirst();
         }
 
