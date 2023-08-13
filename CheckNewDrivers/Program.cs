@@ -95,7 +95,7 @@ namespace CheckNewDrivers
             }
 
             fileVersion.Sort(OrderByDescending);
-            return fileVersion.GetFirst() ?? "00000";
+            return fileVersion.First() ?? "00000";
         }
 
         private static string FindHref(IDomElement element)
@@ -138,7 +138,7 @@ namespace CheckNewDrivers
             }
 
             drivers.Sort(OrderByDescending);
-            return drivers.GetFirst();
+            return drivers.First();
         }
 
         static string GetProgressLine(int percentage)

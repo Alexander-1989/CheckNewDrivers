@@ -2,7 +2,7 @@
 
 namespace CheckNewDrivers
 {
-    class Item : IComparable<Item>
+    internal class Item : IComparable<Item>
     {
         public string Version { get; }
         public string Href { get; }
