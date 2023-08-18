@@ -95,7 +95,7 @@ namespace CheckNewDrivers
             }
 
             fileVersion.Sort(OrderByDescending);
-            return fileVersion.First() ?? "00000";
+            return fileVersion.First("00000");
         }
 
         private static string FindHref(IDomElement element)
