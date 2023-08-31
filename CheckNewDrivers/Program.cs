@@ -238,7 +238,7 @@ namespace CheckNewDrivers
             try
             {
                 Console.WriteLine("Checking for new drivers. Waiting...");
-                CheckVersion(config.fields.Address);
+                CheckVersion(config.properties.Address);
             }
             catch (Exception exc)
             {

@@ -12,7 +12,7 @@ namespace CheckNewDrivers
 
     internal class Configuration
     {
-        public Properties fields = null;
+        public Properties properties = null;
         private readonly string fileName = null;
         private readonly XmlSerializer serrializer = new XmlSerializer(typeof(Properties));
 
@@ -30,13 +30,13 @@ namespace CheckNewDrivers
         {
             if (!File.Exists(fileName))
             {
-                fields = new Properties();
+                properties = new Properties();
             }
             else
             {
                 using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
                 {
-                    fields = serrializer.Deserialize(fs) as Properties;
+                    properties = serrializer.Deserialize(fs) as Properties;
                 }
             }
         }
@@ -45,11 +45,11 @@ namespace CheckNewDrivers
         {
             try
             {
-                if (fields != null)
+                if (properties != null)
                 {
                     using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                     {
-                        serrializer.Serialize(fs, fields);
+                        serrializer.Serialize(fs, properties);
                     }
                 }
             }
