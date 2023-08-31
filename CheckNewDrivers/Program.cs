@@ -13,6 +13,7 @@ namespace CheckNewDrivers
     class Program
     {
         private static readonly WebClient webClient = new WebClient();
+        private static readonly Configuration config = new Configuration();
 
         private static string GetRootAddress(string url)
         {
@@ -31,22 +32,6 @@ namespace CheckNewDrivers
         {
             string rootUrl = GetRootAddress(url);
             return path.StartsWith('/') ? rootUrl + path : rootUrl + '/' + path;
-        }
-
-        private static string ReadUrlFromFile(string fileName)
-        {
-            try
-            {
-                using (StreamReader streamReader = new StreamReader(fileName))
-                {
-                    if (!streamReader.EndOfStream)
-                    {
-                        return streamReader.ReadLine();
-                    }
-                }
-            }
-            catch (Exception) { }
-            return null;
         }
 
         private static bool IsDigit(char ch)
@@ -247,32 +232,20 @@ namespace CheckNewDrivers
 
         static void Main()
         {
+            config.Read();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
-            string fileName = "URL.txt";
-            string defaultURL = "https://motu.com/en-us/download/product/408/";
-            Console.Write($"Read url address from \"{fileName}\" file... ");
 
             try
             {
-                string url = null;
-                if (File.Exists(fileName))
-                {
-                    url = ReadUrlFromFile(fileName);
-                }
-                else
-                {
-                    Console.Write($"File not found. Set default url address...");
-                    url = defaultURL;
-                }
-
-                Console.WriteLine("\nChecking for new drivers. Waiting...");
-                CheckVersion(url);
+                Console.WriteLine("Checking for new drivers. Waiting...");
+                CheckVersion(config.fields.Address);
             }
             catch (Exception exc)
             {
                 Console.WriteLine(exc.Message);
             }
 
+            config.Write();
             WaitExit(5);
             Console.ReadKey();
         }
