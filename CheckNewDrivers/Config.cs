@@ -7,7 +7,14 @@ namespace CheckNewDrivers
     [Serializable]
     public class Properties
     {
-        public string Address { get; set; } = "https://motu.com/en-us/download/product/408/";
+        public string Address { get; set; }
+
+        public Properties() : this(string.Empty) { }
+
+        public Properties(string address)
+        {
+            Address = address;
+        }
     }
 
     internal class Configuration
@@ -28,16 +35,16 @@ namespace CheckNewDrivers
 
         public void Read()
         {
-            if (!File.Exists(fileName))
-            {
-                properties = new Properties();
-            }
-            else
+            if (File.Exists(fileName))
             {
                 using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
                 {
                     properties = serrializer.Deserialize(fs) as Properties;
                 }
+            }
+            else
+            {
+                properties = new Properties("https://motu.com/en-us/download/product/408/");
             }
         }
 
@@ -54,6 +61,11 @@ namespace CheckNewDrivers
                 }
             }
             catch (Exception) { }
+        }
+
+        public bool FileExists()
+        {
+            return File.Exists(fileName);
         }
     }
 }
