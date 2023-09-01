@@ -9,7 +9,7 @@ namespace CheckNewDrivers
     {
         public string Address { get; set; }
 
-        public Properties() : this(string.Empty) { }
+        public Properties() : this("https://motu.com/en-us/download/product/408/") { }
 
         public Properties(string address)
         {
@@ -37,14 +37,14 @@ namespace CheckNewDrivers
         {
             if (File.Exists(fileName))
             {
-                using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                using (StreamReader streamReader = new StreamReader(fileName))
                 {
-                    properties = serrializer.Deserialize(fs) as Properties;
+                    properties = serrializer.Deserialize(streamReader) as Properties;
                 }
             }
             else
             {
-                properties = new Properties("https://motu.com/en-us/download/product/408/");
+                properties = new Properties();
             }
         }
 
@@ -54,9 +54,9 @@ namespace CheckNewDrivers
             {
                 if (properties != null)
                 {
-                    using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                    using (StreamWriter streamWriter = new StreamWriter(fileName))
                     {
-                        serrializer.Serialize(fs, properties);
+                        serrializer.Serialize(streamWriter, properties);
                     }
                 }
             }
