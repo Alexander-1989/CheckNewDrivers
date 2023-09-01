@@ -48,7 +48,7 @@ namespace CheckNewDrivers
                 {
                     newVersion.Append(ch);
                 }
-                else if (ch == ' ')
+                else if (ch == ' ' && newVersion.Length > 0)
                 {
                     break;
                 }
@@ -98,7 +98,7 @@ namespace CheckNewDrivers
             return string.Empty;
         }
 
-        private static void GetContent(IDomElement element, List<Item> drivers)
+        private static void GetContent(IDomElement element, List<Item> driversList)
         {
             const string prefix = "PC v";
             string content = element.InnerText;
@@ -107,23 +107,23 @@ namespace CheckNewDrivers
             {
                 string version = content.Replace(prefix, null);
                 string href = FindHref(element);
-                drivers.Add(new Item(version, href));
+                driversList.Add(new Item(version, href));
             }
         }
 
         private static Item GetDriverVersion(string source)
         {
             const string selector = ".platform-logos";
-            List<Item> drivers = new List<Item>();
+            List<Item> driversList = new List<Item>();
             CQ cq = new CQ(selector, source);
 
             foreach (IDomObject item in cq)
             {
-                GetContent(item.NextElementSibling, drivers);
+                GetContent(item.NextElementSibling, driversList);
             }
 
-            drivers.Sort(OrderByDescending);
-            return drivers.First();
+            driversList.Sort(OrderByDescending);
+            return driversList.First();
         }
 
         static string GetProgressLine(int percentage)
