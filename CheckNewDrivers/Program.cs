@@ -126,7 +126,7 @@ namespace CheckNewDrivers
             return driversList.First();
         }
 
-        static string GetProgressLine(int percentage)
+        private static string GetProgressLine(int percentage)
         {
             int lineLength = 25;
             int percentPerSymbol = 100 / lineLength;
@@ -161,7 +161,7 @@ namespace CheckNewDrivers
             Console.WriteLine("\nDownload completed.");
         }
 
-        static void CheckVersion(string url)
+        private static void CheckVersion(string url)
         {
             try
             {
@@ -213,7 +213,7 @@ namespace CheckNewDrivers
             }
         }
 
-        static void WaitExit(int seconds)
+        private static void WaitExit(int seconds)
         {
             int top = Console.CursorTop;
             int left = Console.CursorLeft;
@@ -230,7 +230,7 @@ namespace CheckNewDrivers
             }).Start();
         }
 
-        static void Main()
+        private static void Main()
         {
             config.Read();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
