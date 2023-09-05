@@ -8,8 +8,9 @@ namespace CheckNewDrivers
     public class Properties
     {
         public string Address { get; set; }
+        private const string defAddress = "https://motu.com/en-us/download/product/408/";
 
-        public Properties() : this("https://motu.com/en-us/download/product/408/") { }
+        public Properties() : this(defAddress) { }
 
         public Properties(string address)
         {
@@ -20,12 +21,13 @@ namespace CheckNewDrivers
     internal class Configuration
     {
         public Properties properties = null;
+        private const string defName = "Config.xml";
         private readonly string fileName = null;
         private readonly XmlSerializer serrializer = new XmlSerializer(typeof(Properties));
 
         public Configuration()
         {
-            fileName = Path.Combine(Environment.CurrentDirectory, "Config.xml");
+            fileName = Path.Combine(Environment.CurrentDirectory, defName);
         }
 
         public Configuration(string FileName)

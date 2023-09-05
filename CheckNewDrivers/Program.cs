@@ -41,23 +41,23 @@ namespace CheckNewDrivers
 
         private static string NormalizeVersion(string version)
         {
-            StringBuilder newVersion = new StringBuilder(10);
+            StringBuilder result = new StringBuilder(10);
             foreach (char ch in version)
             {
                 if (IsDigit(ch))
                 {
-                    newVersion.Append(ch);
+                    result.Append(ch);
                 }
-                else if (ch == ' ' && newVersion.Length > 0)
+                else if (ch == ' ' && result.Length > 0)
                 {
                     break;
                 }
             }
 
             int maxLength = 5;
-            int currentLength = newVersion.Length;
+            int currentLength = result.Length;
 
-            return currentLength <= maxLength ? newVersion.ToString() : newVersion.ToString(currentLength - maxLength, maxLength);
+            return currentLength <= maxLength ? result.ToString() : result.ToString(currentLength - maxLength, maxLength);
         }
 
         private static int OrderByDescending<T>(T a, T b) where T : IComparable<T>
@@ -80,7 +80,7 @@ namespace CheckNewDrivers
             }
 
             fileVersion.Sort(OrderByDescending);
-            return fileVersion.First("00000");
+            return fileVersion.GetFirst("00000");
         }
 
         private static string FindHref(IDomElement element)
@@ -123,7 +123,7 @@ namespace CheckNewDrivers
             }
 
             driversList.Sort(OrderByDescending);
-            return driversList.First();
+            return driversList.GetFirst();
         }
 
         private static string GetProgressLine(int percentage)

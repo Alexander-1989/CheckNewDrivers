@@ -5,25 +5,19 @@ namespace CheckNewDrivers
 {
     internal static class Extension
     {
-        public static T First<T>(this IEnumerable<T> items)
+        public static T GetFirst<T>(this IEnumerable<T> items, T initialValue = default)
         {
             IEnumerator<T> enumerator = items?.GetEnumerator();
-            return enumerator == null || !enumerator.MoveNext() ? default : enumerator.Current;
-        }
-
-        public static T First<T>(this IEnumerable<T> items, T defaultValue)
-        {
-            IEnumerator<T> enumerator = items?.GetEnumerator();
-            return enumerator == null || !enumerator.MoveNext() ? defaultValue : enumerator.Current;
+            return enumerator == null || !enumerator.MoveNext() ? initialValue : enumerator.Current;
         }
 
         public static bool StartsWith(this string str, char value)
         {
             if (str == null || str.Length < 1)
             {
-                throw new Exception($"{nameof(str)} is Null or Empty");
+                throw new Exception($"String {nameof(str)} is Null or Empty");
             }
-            return value == str[0];
+            return str[0] == value;
         }
     }
 }
