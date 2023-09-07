@@ -159,7 +159,7 @@ namespace CheckNewDrivers
             };
 
             webClient.DownloadFileTaskAsync(address, fileName).Wait();
-            return currentPercentage == 100; 
+            return currentPercentage == 100;
         }
 
         private static void CheckVersion(string url)
