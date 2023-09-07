@@ -140,15 +140,16 @@ namespace CheckNewDrivers
             return new string(percentLine);
         }
 
-        private static void Download(string address, string fileName)
+        private static bool Download(string address, string fileName)
         {
-            int prevPercentage = -1;
+            int prevPercentage = 0;
+            int currentPercentage = 0;
             int top = Console.CursorTop;
             int left = Console.CursorLeft;
 
             webClient.DownloadProgressChanged += (s, e) =>
             {
-                int currentPercentage = e.ProgressPercentage;
+                currentPercentage = e.ProgressPercentage;
                 if (currentPercentage != prevPercentage)
                 {
                     Console.WriteLine($"Downloading {currentPercentage}% {GetProgressLine(currentPercentage)}");
@@ -158,7 +159,7 @@ namespace CheckNewDrivers
             };
 
             webClient.DownloadFileTaskAsync(address, fileName).Wait();
-            Console.WriteLine("\nDownload completed.");
+            return currentPercentage == 100; 
         }
 
         private static void CheckVersion(string url)
@@ -173,15 +174,18 @@ namespace CheckNewDrivers
                 {
                     Console.WriteLine("Unable to find new driver version.");
                 }
-                else if (string.Compare(productVersion.Version, fileProductVersion) > 0)
+                else if (productVersion.Version.CompareTo(fileProductVersion) <= 0)
                 {
-                    Console.WriteLine("There is a NEW VERSION of drivers!!!");
+                    Console.WriteLine("You already have the LATEST drivers.");
+                }
+                else
+                {
+                    Console.WriteLine("There is a NEW VERSION drivers!!!");
                     Console.WriteLine($"Your Version: {fileProductVersion}");
                     Console.WriteLine($"New Version:  {productVersion.Version}");
                     Console.WriteLine("Press 'D' for download a new version or 'O' for visit a website page.");
 
-                    char inputChar = Console.ReadKey(true).KeyChar;
-                    switch (inputChar)
+                    switch (Console.ReadKey(true).KeyChar)
                     {
                         case 'd':
                         case 'в':
@@ -189,7 +193,21 @@ namespace CheckNewDrivers
                         case 'В':
                             string href = CombineAddress(url, productVersion.Href);
                             string fileName = $"MOTU M Series Installer ({productVersion.Version}).exe";
-                            Download(href, fileName);
+                            if (Download(href, fileName))
+                            {
+                                Console.WriteLine("\nDownload completed.\nPress 'O' for opening downloaded file.");
+                                switch (Console.ReadKey(true).KeyChar)
+                                {
+                                    case 'o':
+                                    case 'щ':
+                                    case 'O':
+                                    case 'Щ':
+                                        Process.Start(fileName);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
                             break;
                         case 'o':
                         case 'щ':
@@ -201,10 +219,6 @@ namespace CheckNewDrivers
                         default:
                             break;
                     }
-                }
-                else
-                {
-                    Console.WriteLine("You already have the LATEST drivers.");
                 }
             }
             catch (Exception exc)
@@ -237,7 +251,7 @@ namespace CheckNewDrivers
 
             try
             {
-                Console.WriteLine("Checking for new drivers. Waiting...");
+                Console.WriteLine("Checking for a new version drivers. Waiting...");
                 CheckVersion(config.properties.Address);
             }
             catch (Exception exc)
