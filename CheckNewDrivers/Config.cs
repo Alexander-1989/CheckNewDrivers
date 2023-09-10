@@ -20,7 +20,7 @@ namespace CheckNewDrivers
 
     internal class Configuration
     {
-        public Properties properties = null;
+        public Properties Properties { get; set; }
         private const string defName = "Config.xml";
         private readonly string fileName = null;
         private readonly XmlSerializer serrializer = new XmlSerializer(typeof(Properties));
@@ -41,12 +41,12 @@ namespace CheckNewDrivers
             {
                 using (StreamReader streamReader = new StreamReader(fileName))
                 {
-                    properties = serrializer.Deserialize(streamReader) as Properties;
+                    Properties = serrializer.Deserialize(streamReader) as Properties;
                 }
             }
             else
             {
-                properties = new Properties();
+                Properties = new Properties();
             }
         }
 
@@ -54,11 +54,11 @@ namespace CheckNewDrivers
         {
             try
             {
-                if (properties != null)
+                if (Properties != null)
                 {
                     using (StreamWriter streamWriter = new StreamWriter(fileName))
                     {
-                        serrializer.Serialize(streamWriter, properties);
+                        serrializer.Serialize(streamWriter, Properties);
                     }
                 }
             }

@@ -2,11 +2,11 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CheckNewDrivers
 {
@@ -30,8 +30,8 @@ namespace CheckNewDrivers
 
         private static string CombineAddress(string url, string path)
         {
-            string rootUrl = GetRootAddress(url);
-            return path.StartsWith('/') ? rootUrl + path : rootUrl + '/' + path;
+            string rootAddress = GetRootAddress(url);
+            return path.StartsWith('/') ? rootAddress + path : rootAddress + '/' + path;
         }
 
         private static bool IsDigit(char ch)
@@ -134,7 +134,7 @@ namespace CheckNewDrivers
 
             for (int i = 0; i < lineLength; i++)
             {
-                percentLine[i] = (i < (percentage / percentPerSymbol)) ? '#' : '-';
+                percentLine[i] = i < percentage / percentPerSymbol ? '#' : '-';
             }
 
             return new string(percentLine);
@@ -162,6 +162,55 @@ namespace CheckNewDrivers
             return currentPercentage == 100;
         }
 
+        private static void DownloadFileDialog(string url, Item productVersion)
+        {
+            Console.WriteLine("Press 'D' for download a new version or 'O' for visit a website page.");
+            char inputKey = Console.ReadKey(true).KeyChar;
+
+            switch (inputKey)
+            {
+                case 'd':
+                case 'в':
+                case 'D':
+                case 'В':
+                    string href = CombineAddress(url, productVersion.Href);
+                    string fileName = $"MOTU M Series Installer ({productVersion.Version}).exe";
+                    if (Download(href, fileName))
+                    {
+                        Console.WriteLine("\nDownload completed.");
+                        OpenFileDialog(fileName);
+                    }
+                    break;
+                case 'o':
+                case 'щ':
+                case 'O':
+                case 'Щ':
+                    Console.WriteLine("Opening website.");
+                    Process.Start(url).Dispose();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private static void OpenFileDialog(string fileName)
+        {
+            Console.WriteLine("Press 'O' for opening downloaded file.");
+            char inputKey = Console.ReadKey(true).KeyChar;
+
+            switch (inputKey)
+            {
+                case 'o':
+                case 'щ':
+                case 'O':
+                case 'Щ':
+                    Process.Start(fileName).Dispose();
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private static void CheckVersion(string url)
         {
             try
@@ -183,42 +232,7 @@ namespace CheckNewDrivers
                     Console.WriteLine("There is a NEW VERSION drivers!!!");
                     Console.WriteLine($"Your Version: {fileProductVersion}");
                     Console.WriteLine($"New Version:  {productVersion.Version}");
-                    Console.WriteLine("Press 'D' for download a new version or 'O' for visit a website page.");
-
-                    switch (Console.ReadKey(true).KeyChar)
-                    {
-                        case 'd':
-                        case 'в':
-                        case 'D':
-                        case 'В':
-                            string href = CombineAddress(url, productVersion.Href);
-                            string fileName = $"MOTU M Series Installer ({productVersion.Version}).exe";
-                            if (Download(href, fileName))
-                            {
-                                Console.WriteLine("\nDownload completed.\nPress 'O' for opening downloaded file.");
-                                switch (Console.ReadKey(true).KeyChar)
-                                {
-                                    case 'o':
-                                    case 'щ':
-                                    case 'O':
-                                    case 'Щ':
-                                        Process.Start(fileName);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                            break;
-                        case 'o':
-                        case 'щ':
-                        case 'O':
-                        case 'Щ':
-                            Console.WriteLine("Opening website.");
-                            Process.Start(url);
-                            break;
-                        default:
-                            break;
-                    }
+                    DownloadFileDialog(url, productVersion);
                 }
             }
             catch (Exception exc)
@@ -247,19 +261,20 @@ namespace CheckNewDrivers
         private static void Main()
         {
             config.Read();
+            string address = config.Properties.Address;
+            config.Write();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
 
             try
             {
                 Console.WriteLine("Checking for a new version drivers. Waiting...");
-                CheckVersion(config.properties.Address);
+                CheckVersion(address);
             }
             catch (Exception exc)
             {
                 Console.WriteLine(exc.Message);
             }
 
-            config.Write();
             WaitExit(5);
             Console.ReadKey();
         }
