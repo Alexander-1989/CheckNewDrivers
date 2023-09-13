@@ -186,7 +186,7 @@ namespace CheckNewDrivers
                 case 'O':
                 case 'Щ':
                     Console.WriteLine("Opening website.");
-                    Process.Start(url).Dispose();
+                    using (Process.Start(url)) { };
                     break;
                 default:
                     break;
@@ -204,7 +204,7 @@ namespace CheckNewDrivers
                 case 'щ':
                 case 'O':
                 case 'Щ':
-                    Process.Start(fileName).Dispose();
+                    using (Process.Start(fileName)) { };
                     break;
                 default:
                     break;
@@ -241,7 +241,7 @@ namespace CheckNewDrivers
             }
         }
 
-        private static void WaitExit(int seconds)
+        private static void WaitForExit(int seconds)
         {
             int top = Console.CursorTop;
             int left = Console.CursorLeft;
@@ -260,10 +260,14 @@ namespace CheckNewDrivers
 
         private static void Main()
         {
+            ServicePointManager.SecurityProtocol =
+                SecurityProtocolType.Tls |
+                SecurityProtocolType.Tls11 |
+                SecurityProtocolType.Tls12 |
+                SecurityProtocolType.Ssl3;
             config.Read();
             string address = config.Properties.Address;
             config.Write();
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
 
             try
             {
@@ -275,7 +279,7 @@ namespace CheckNewDrivers
                 Console.WriteLine(exc.Message);
             }
 
-            WaitExit(5);
+            WaitForExit(5);
             Console.ReadKey();
         }
     }
