@@ -20,6 +20,22 @@ namespace CheckNewDrivers
             return Version.CompareTo(other.Version);
         }
 
+        public int CompareTo(string version)
+        {
+            return Version.CompareTo(version);
+        }
+
+        public bool IsNotEmpty
+        {
+            get
+            {
+                return Version != null &&
+                    Version.Length > 0 &&
+                    Href != null &&
+                    Href.Length > 0;
+            }
+        }
+
         public override string ToString()
         {
             return Version;

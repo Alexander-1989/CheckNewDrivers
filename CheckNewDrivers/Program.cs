@@ -219,11 +219,11 @@ namespace CheckNewDrivers
                 Item productVersion = GetDriverVersion(source);
                 string fileProductVersion = GetFileVersions(Environment.CurrentDirectory);
 
-                if (string.IsNullOrEmpty(productVersion?.Version))
+                if (productVersion == null || !productVersion.IsNotEmpty)
                 {
                     Console.WriteLine("Unable to find new driver version.");
                 }
-                else if (productVersion.Version.CompareTo(fileProductVersion) <= 0)
+                else if (productVersion.CompareTo(fileProductVersion) <= 0)
                 {
                     Console.WriteLine("You already have the LATEST drivers.");
                 }
