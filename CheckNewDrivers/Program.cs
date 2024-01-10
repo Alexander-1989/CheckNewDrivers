@@ -219,20 +219,24 @@ namespace CheckNewDrivers
                 Item productVersion = GetDriverVersion(source);
                 string fileProductVersion = GetFileVersions(Environment.CurrentDirectory);
 
-                if (productVersion == null || !productVersion.IsNotEmpty)
+                if (productVersion == null || productVersion.IsEmpty)
                 {
                     Console.WriteLine("Unable to find new driver version.");
                 }
-                else if (productVersion.CompareTo(fileProductVersion) <= 0)
-                {
-                    Console.WriteLine("You already have the LATEST drivers.");
-                }
                 else
                 {
-                    Console.WriteLine("There is a NEW VERSION drivers!!!");
                     Console.WriteLine($"Your Version: {fileProductVersion}");
                     Console.WriteLine($"New Version:  {productVersion.Version}");
-                    DownloadFileDialog(url, productVersion);
+
+                    if (productVersion.CompareTo(fileProductVersion) <= 0)
+                    {
+                        Console.WriteLine("You already have the LATEST drivers.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("There is a NEW VERSION drivers!!!");
+                        DownloadFileDialog(url, productVersion);
+                    }
                 }
             }
             catch (Exception exc)
@@ -265,8 +269,11 @@ namespace CheckNewDrivers
                 SecurityProtocolType.Tls11 |
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Ssl3;
+
             config.Read();
             string address = config.Properties.Address;
+            Enum.TryParse(config.Properties.TextColor, out ConsoleColor consoleColor);
+            Console.ForegroundColor = (consoleColor != ConsoleColor.Black) ? consoleColor : ConsoleColor.Gray;
             config.Write();
 
             try

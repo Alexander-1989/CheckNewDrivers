@@ -8,13 +8,19 @@ namespace CheckNewDrivers
     public class Properties
     {
         public string Address { get; set; }
+        public string TextColor { get; set; }
+
+        private const string defTextColor = "Gray";
         private const string defAddress = "https://motu.com/en-us/download/product/408/";
 
         public Properties() : this(defAddress) { }
 
-        public Properties(string address)
+        public Properties(string address) : this(address, defTextColor) { }
+
+        public Properties(string address, string textColor)
         {
             Address = address;
+            TextColor = textColor;
         }
     }
 
