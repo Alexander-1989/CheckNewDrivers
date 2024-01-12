@@ -220,7 +220,7 @@ namespace CheckNewDrivers
                     Console.WriteLine($"Your Version: {fileProductVersion}");
                     Console.WriteLine($"New Version:  {productVersion.Version}");
 
-                    if (productVersion.CompareTo(fileProductVersion) <= 0)
+                    if (productVersion.CompareTo(fileProductVersion) < 1)
                     {
                         Console.WriteLine("You already have the LATEST drivers.");
                     }
