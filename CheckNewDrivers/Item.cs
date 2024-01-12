@@ -17,12 +17,12 @@ namespace CheckNewDrivers
 
         public int CompareTo(Item other)
         {
-            return Version.CompareTo(other.Version);
+            return CompareVersion(Version, other.Version);
         }
 
         public int CompareTo(string version)
         {
-            return Version.CompareTo(version);
+            return CompareVersion(Version, version);
         }
 
         public bool IsEmpty => Version == null || Version.Length == 0 || Href == null || Href.Length == 0;
@@ -30,6 +30,20 @@ namespace CheckNewDrivers
         public override string ToString()
         {
             return Version;
+        }
+
+        protected virtual int CompareVersion(string version1, string version2)
+        {
+            int minLength = Math.Min(version1.Length, version2.Length);
+            if (version1.Length > minLength)
+            {
+                version1 = version1.Substring(version1.Length - minLength, minLength);
+            }
+            else
+            {
+                version2 = version2.Substring(version2.Length - minLength, minLength);
+            }
+            return string.Compare(version1, version2);
         }
     }
 }

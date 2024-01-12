@@ -48,16 +48,8 @@ namespace CheckNewDrivers
                 {
                     result.Append(ch);
                 }
-                else if (ch == ' ' && result.Length > 0)
-                {
-                    break;
-                }
             }
-
-            int maxLength = 5;
-            int currentLength = result.Length;
-
-            return currentLength <= maxLength ? result.ToString() : result.ToString(currentLength - maxLength, maxLength);
+            return result.ToString();
         }
 
         private static int OrderByDescending<T>(T a, T b) where T : IComparable<T>
