@@ -34,17 +34,25 @@ namespace CheckNewDrivers
 
         protected virtual int CompareVersions(string versionA, string versionB)
         {
+            if (versionA == null || versionB == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             int lengthA = versionA.Length;
             int lengthB = versionB.Length;
             int minLength = lengthA < lengthB ? lengthA : lengthB;
 
             for (int i = lengthA - minLength, j = lengthB - minLength; i < lengthA && j < lengthB; i++, j++)
             {
-                if (versionA[i] < versionB[j])
+                char charA = versionA[i];
+                char charB = versionB[j];
+
+                if (charA < charB)
                 {
                     return -1;
                 }
-                else if (versionA[i] > versionB[j])
+                else if (charA > charB)
                 {
                     return 1;
                 }
