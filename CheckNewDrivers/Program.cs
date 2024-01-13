@@ -209,7 +209,7 @@ namespace CheckNewDrivers
             {
                 string source = webClient.DownloadString(url);
                 Item productVersion = GetDriverVersion(source);
-                string fileProductVersion = GetFileVersions(Environment.CurrentDirectory);
+                string fileVersion = GetFileVersions(Environment.CurrentDirectory);
 
                 if (productVersion == null || productVersion.IsEmpty)
                 {
@@ -217,10 +217,10 @@ namespace CheckNewDrivers
                 }
                 else
                 {
-                    Console.WriteLine($"Your Version: {fileProductVersion}");
+                    Console.WriteLine($"Your Version: {fileVersion}");
                     Console.WriteLine($"New Version:  {productVersion.Version}");
 
-                    if (productVersion.CompareTo(fileProductVersion) < 1)
+                    if (productVersion.CompareTo(fileVersion) < 1)
                     {
                         Console.WriteLine("You already have the LATEST drivers.");
                     }
