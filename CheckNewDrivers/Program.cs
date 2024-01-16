@@ -90,23 +90,24 @@ namespace CheckNewDrivers
             return string.Empty;
         }
 
-        private static void GetContent(IDomElement element, List<Item> driversList)
+        private static void GetContent(IDomElement element, List<Driver> driversList)
         {
             const string prefix = "PC v";
             string content = element.InnerText;
 
             if (content.Contains(prefix) && !content.Contains("."))
             {
+                string name = "Motu";
                 string version = content.Replace(prefix, null);
                 string href = FindHref(element);
-                driversList.Add(new Item(version, href));
+                driversList.Add(new Driver(name, version, href));
             }
         }
 
-        private static Item GetDriverVersion(string source)
+        private static Driver GetDriverVersion(string source)
         {
             const string selector = ".platform-logos";
-            List<Item> driversList = new List<Item>();
+            List<Driver> driversList = new List<Driver>();
             CQ cq = new CQ(selector, source);
 
             foreach (IDomObject item in cq)
@@ -154,7 +155,7 @@ namespace CheckNewDrivers
             return currentPercentage == 100;
         }
 
-        private static void DownloadFileDialog(string url, Item productVersion)
+        private static void DownloadFileDialog(string url, Driver productVersion)
         {
             Console.WriteLine("Press 'D' for download a new version or 'O' for visit a website page.");
             char inputKey = Console.ReadKey(true).KeyChar;
@@ -208,10 +209,10 @@ namespace CheckNewDrivers
             try
             {
                 string source = webClient.DownloadString(url);
-                Item productVersion = GetDriverVersion(source);
+                Driver productVersion = GetDriverVersion(source);
                 string fileVersion = GetFileVersions(Environment.CurrentDirectory);
 
-                if (productVersion == null || productVersion.IsEmpty)
+                if (productVersion == null || productVersion.IsEmpty())
                 {
                     Console.WriteLine("Unable to find new driver version.");
                 }

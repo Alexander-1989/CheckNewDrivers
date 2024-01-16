@@ -2,20 +2,22 @@
 
 namespace CheckNewDrivers
 {
-    internal class Item : IComparable<Item>
+    internal class Driver : IComparable<Driver>
     {
+        public string Name { get; }
         public string Version { get; }
         public string Href { get; }
 
-        public Item() : this(string.Empty, string.Empty) { }
+        public Driver() : this(string.Empty, string.Empty, string.Empty) { }
 
-        public Item(string version, string href)
+        public Driver(string name, string version, string href)
         {
+            Name = name;
             Version = version;
             Href = href;
         }
 
-        public int CompareTo(Item other)
+        public int CompareTo(Driver other)
         {
             return CompareVersions(Version, other.Version);
         }
@@ -25,7 +27,10 @@ namespace CheckNewDrivers
             return CompareVersions(Version, version);
         }
 
-        public bool IsEmpty => Version == null || Version.Length == 0 || Href == null || Href.Length == 0;
+        public bool IsEmpty()
+        {
+            return Version == null || Version.Length == 0 || Href == null || Href.Length == 0;
+        }
 
         public override string ToString()
         {

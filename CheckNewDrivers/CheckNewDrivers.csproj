@@ -39,7 +39,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Extension.cs" />
-    <Compile Include="Item.cs" />
+    <Compile Include="Driver.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
