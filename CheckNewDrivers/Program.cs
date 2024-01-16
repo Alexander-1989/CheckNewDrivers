@@ -126,7 +126,7 @@ namespace CheckNewDrivers
 
             for (int i = 0; i < lineLength; i++)
             {
-                percentLine[i] = i < percentage / percentPerSymbol ? '#' : '-';
+                percentLine[i] = (i < (percentage / percentPerSymbol)) ? '#' : '-';
             }
 
             return new string(percentLine);

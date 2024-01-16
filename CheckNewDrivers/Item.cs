@@ -43,7 +43,7 @@ namespace CheckNewDrivers
             int lengthB = versionB.Length;
             int minLength = lengthA < lengthB ? lengthA : lengthB;
 
-            for (int i = lengthA - minLength, j = lengthB - minLength; i < lengthA && j < lengthB; i++, j++)
+            for (int i = lengthA - minLength, j = lengthB - minLength; i < lengthA; i++, j++)
             {
                 char charA = versionA[i];
                 char charB = versionB[j];
