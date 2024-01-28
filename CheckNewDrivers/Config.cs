@@ -8,20 +8,26 @@ namespace CheckNewDrivers
     public class Properties
     {
         public string Address { get; set; }
-        public string TextColor { get; set; }
+        public string ForegroundColor { get; set; }
+        public string BackgroundColor { get; set; }
 
-        private const string defTextColor = "Gray";
-        private const string defAddress = "https://motu.com/en-us/download/product/408/";
+        private const string defaultForegroundColor = "Gray";
+        private const string defaultBackgroundColor = "Black";
+        private const string defaultAddress = "https://motu.com/en-us/download/product/408/";
 
-        public Properties() : this(defAddress) { }
+        public Properties() : this(defaultAddress, defaultForegroundColor, defaultBackgroundColor) { }
 
-        public Properties(string address) : this(address, defTextColor) { }
+        public Properties(string address) : this(address, defaultForegroundColor, defaultBackgroundColor) { }
 
-        public Properties(string address, string textColor)
+        public Properties(string address, string foregroundColor) : this(address, foregroundColor, defaultBackgroundColor) { }
+
+        public Properties(string address, string foregroundColor, string backgroundColor)
         {
             Address = address;
-            TextColor = textColor;
+            ForegroundColor = foregroundColor;
+            BackgroundColor = backgroundColor;
         }
+
     }
 
     internal class Configuration

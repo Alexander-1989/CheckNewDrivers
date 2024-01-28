@@ -257,17 +257,31 @@ namespace CheckNewDrivers
 
         private static void Main()
         {
+            string address = string.Empty;
             ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Tls |
                 SecurityProtocolType.Tls11 |
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Ssl3;
 
-            config.Read();
-            string address = config.Properties.Address;
-            Enum.TryParse(config.Properties.TextColor, out ConsoleColor consoleColor);
-            Console.ForegroundColor = (consoleColor != ConsoleColor.Black) ? consoleColor : ConsoleColor.Gray;
-            config.Write();
+            try
+            {
+                config.Read();
+                address = config.Properties.Address;
+                Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.ForegroundColor);
+                Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.BackgroundColor);
+            }
+            catch (Exception)
+            {
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.BackgroundColor = ConsoleColor.Black;
+            }
+            finally
+            {
+                config.Properties.ForegroundColor = Console.ForegroundColor.ToString();
+                config.Properties.BackgroundColor = Console.BackgroundColor.ToString();
+                config.Write();
+            }
 
             try
             {
