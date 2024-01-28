@@ -243,7 +243,7 @@ namespace CheckNewDrivers
             int top = Console.CursorTop;
             int left = Console.CursorLeft;
 
-            new Task(() =>
+            Task task = new Task(() =>
             {
                 for (int i = seconds; i > 0; i--)
                 {
@@ -252,7 +252,9 @@ namespace CheckNewDrivers
                     Thread.Sleep(1000);
                 }
                 Environment.Exit(0);
-            }).Start();
+            });
+
+            task.Start();
         }
 
         private static void Main()
