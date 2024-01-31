@@ -218,8 +218,8 @@ namespace CheckNewDrivers
                 }
                 else
                 {
-                    Console.WriteLine($"Your Version: {fileVersion}");
-                    Console.WriteLine($"New Version:  {productVersion.Version}");
+                    Console.WriteLine($"Your Version: {fileVersion, 8}");
+                    Console.WriteLine($"New Version:  {productVersion.Version, 8}");
 
                     if (productVersion.CompareTo(fileVersion) < 1)
                     {
