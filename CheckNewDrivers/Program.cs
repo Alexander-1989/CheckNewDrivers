@@ -123,14 +123,15 @@ namespace CheckNewDrivers
         {
             int lineLength = 25;
             int percentPerSymbol = 100 / lineLength;
-            char[] percentLine = new char[lineLength];
+            StringBuilder percentLine = new StringBuilder(lineLength);
 
             for (int i = 0; i < lineLength; i++)
             {
-                percentLine[i] = (i < (percentage / percentPerSymbol)) ? '#' : '-';
+                char symbol = i < percentage / percentPerSymbol ? '#' : '-';
+                percentLine.Append(symbol);
             }
 
-            return new string(percentLine);
+            return percentLine.ToString();
         }
 
         private static bool Download(string address, string fileName)
