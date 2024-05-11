@@ -52,12 +52,17 @@ namespace CheckNewDrivers
             return result.ToString();
         }
 
+        private static int OrderByAscending<T>(T a, T b) where T : IComparable<T>
+        {
+            return a.CompareTo(b);
+        }
+
         private static int OrderByDescending<T>(T a, T b) where T : IComparable<T>
         {
             return b.CompareTo(a);
         }
 
-        private static string GetFileVersions(string path)
+        private static string[] GetFileVersions(string path)
         {
             const string partOfName = "MOTU M Series Installer";
             List<string> fileVersion = new List<string>();
@@ -71,8 +76,8 @@ namespace CheckNewDrivers
                 }
             }
 
-            fileVersion.Sort(OrderByDescending);
-            return fileVersion.GetFirst("00000");
+            fileVersion.Sort(OrderByAscending);
+            return fileVersion.ToArray();
         }
 
         private static string FindHref(IDomElement element)
@@ -100,7 +105,8 @@ namespace CheckNewDrivers
                 string name = "Motu";
                 string version = content.Replace(prefix, null);
                 string href = FindHref(element);
-                driversList.Add(new Driver(name, version, href));
+                Driver driver = new Driver(name, version, href);
+                driversList.Add(driver);
             }
         }
 
@@ -211,7 +217,8 @@ namespace CheckNewDrivers
             {
                 string source = webClient.DownloadString(url);
                 Driver productVersion = GetDriverVersion(source);
-                string fileVersion = GetFileVersions(Environment.CurrentDirectory);
+                string[] fileVersions = GetFileVersions(Environment.CurrentDirectory);
+                string lastFileVersion = fileVersions.GetLast("00000");
 
                 if (productVersion == null || productVersion.IsEmpty())
                 {
@@ -219,10 +226,22 @@ namespace CheckNewDrivers
                 }
                 else
                 {
-                    Console.WriteLine($"Your Version: {fileVersion, 8}");
-                    Console.WriteLine($"New Version:  {productVersion.Version, 8}");
+                    for (int index = 0; index < fileVersions.Length; index++)
+                    {
+                        if (index == 0)
+                        {
+                            Console.WriteLine($"All your versions: {fileVersions[index], 10}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{fileVersions[index], 29}");
+                        }
+                    }
 
-                    if (productVersion.CompareTo(fileVersion) < 1)
+                    Console.WriteLine($"Your Last Version: {lastFileVersion, 10}");
+                    Console.WriteLine($"New Version:  {productVersion.Version, 15}");
+
+                    if (productVersion.CompareTo(lastFileVersion) < 1)
                     {
                         Console.WriteLine("You already have the LATEST drivers.");
                     }

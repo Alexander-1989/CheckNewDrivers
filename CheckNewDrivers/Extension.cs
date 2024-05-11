@@ -7,8 +7,47 @@ namespace CheckNewDrivers
     {
         public static T GetFirst<T>(this IEnumerable<T> items, T initialValue = default)
         {
-            IEnumerator<T> enumerator = items?.GetEnumerator();
-            return enumerator == null || !enumerator.MoveNext() ? initialValue : enumerator.Current;
+            if (items == null)
+            {
+                return initialValue;
+            }
+
+            using (IEnumerator<T> enumerator = items.GetEnumerator())
+            {
+                return enumerator.MoveNext() ? enumerator.Current : initialValue;
+            }
+        }
+
+        public static T GetLast<T>(this IEnumerable<T> items, T initialValue = default)
+        {
+            if (items == null)
+            {
+                return initialValue;
+            }
+
+            if (items is IList<T> list && list.Count > 0)
+            {
+                return list[list.Count - 1];
+            }
+
+            T value;
+            using (IEnumerator<T> enumerator = items.GetEnumerator())
+            {
+                if (enumerator.MoveNext())
+                {
+                    do
+                    {
+                        value = enumerator.Current;
+                    }
+                    while (enumerator.MoveNext());
+                }
+                else
+                {
+                    value = initialValue;
+                }
+            }
+
+            return value;
         }
 
         public static bool StartsWith(this string str, char value)
