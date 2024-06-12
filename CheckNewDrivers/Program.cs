@@ -211,6 +211,21 @@ namespace CheckNewDrivers
             }
         }
 
+        private static void ShowDriversList<T>(T[] array)
+        {
+            for (int index = 0; index < array.Length; index++)
+            {
+                if (index == 0)
+                {
+                    Console.WriteLine($"All your versions: {array[index], 10}");
+                }
+                else
+                {
+                    Console.WriteLine($"{array[index], 29}");
+                }
+            }
+        }
+
         private static void CheckVersion(string url)
         {
             try
@@ -226,18 +241,7 @@ namespace CheckNewDrivers
                 }
                 else
                 {
-                    for (int index = 0; index < fileVersions.Length; index++)
-                    {
-                        if (index == 0)
-                        {
-                            Console.WriteLine($"All your versions: {fileVersions[index], 10}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"{fileVersions[index], 29}");
-                        }
-                    }
-
+                    ShowDriversList(fileVersions);
                     Console.WriteLine($"Your Last Version: {lastFileVersion, 10}");
                     Console.WriteLine($"New Version:  {productVersion.Version, 15}");
 
@@ -277,14 +281,19 @@ namespace CheckNewDrivers
             task.Start();
         }
 
-        private static void Main()
+        private static void SetSecurityProtocol()
         {
-            string address = string.Empty;
             ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Tls |
                 SecurityProtocolType.Tls11 |
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Ssl3;
+        }
+
+        private static void Main()
+        {
+            string address = string.Empty;
+            SetSecurityProtocol();
 
             try
             {
