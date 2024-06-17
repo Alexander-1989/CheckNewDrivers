@@ -211,17 +211,18 @@ namespace CheckNewDrivers
             }
         }
 
-        private static void ShowDriversList<T>(T[] array)
+        private static void ShowDriversList<T>(IEnumerable<T> items)
         {
-            for (int index = 0; index < array.Length; index++)
+            int index = 0;
+            foreach (var item in items)
             {
-                if (index == 0)
+                if (index++ == 0)
                 {
-                    Console.WriteLine($"All your versions: {array[index], 10}");
+                    Console.WriteLine($"All your versions: {item, 10}");
                 }
                 else
                 {
-                    Console.WriteLine($"{array[index], 29}");
+                    Console.WriteLine($"{item, 29}");
                 }
             }
         }
@@ -241,7 +242,11 @@ namespace CheckNewDrivers
                 }
                 else
                 {
-                    ShowDriversList(fileVersions);
+                    if (fileVersions.Length > 1)
+                    {
+                        ShowDriversList(fileVersions);
+                    }
+
                     Console.WriteLine($"Your Last Version: {lastFileVersion, 10}");
                     Console.WriteLine($"New Version:  {productVersion.Version, 15}");
 
