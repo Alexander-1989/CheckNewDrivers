@@ -64,15 +64,16 @@ namespace CheckNewDrivers
 
         private static string[] GetFileVersions(string path)
         {
-            const string partOfName = "MOTU M Series Installer";
+            const string partOfName = "MOTU M Series";
             List<string> fileVersion = new List<string>();
 
-            foreach (string file in Directory.GetFiles(path, "*.exe"))
+            foreach (string fileName in Directory.GetFiles(path, "*.exe", SearchOption.AllDirectories))
             {
-                if (file.Contains(partOfName))
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(fileName);
+                if (fileVersionInfo.ProductName.Contains(partOfName))
                 {
-                    string version = NormalizeVersion(FileVersionInfo.GetVersionInfo(file).ProductVersion);
-                    fileVersion.Add(version);
+                    string productVersion = NormalizeVersion(fileVersionInfo.ProductVersion);
+                    fileVersion.Add(productVersion);
                 }
             }
 
@@ -213,11 +214,12 @@ namespace CheckNewDrivers
 
         private static void ShowDriversList<T>(IEnumerable<T> items)
         {
-            int index = 0;
-            foreach (var item in items)
+            bool first = true;
+            foreach (T item in items)
             {
-                if (index++ == 0)
+                if (first)
                 {
+                    first = false;
                     Console.WriteLine($"All your versions: {item, 10}");
                 }
                 else
