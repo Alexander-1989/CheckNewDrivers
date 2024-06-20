@@ -70,7 +70,7 @@ namespace CheckNewDrivers
             foreach (string fileName in Directory.GetFiles(path, "*.exe", SearchOption.AllDirectories))
             {
                 FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(fileName);
-                if (fileVersionInfo.ProductName.Contains(partOfName))
+                if (fileVersionInfo.ProductName != null && fileVersionInfo.ProductName.Contains(partOfName))
                 {
                     string productVersion = NormalizeVersion(fileVersionInfo.ProductVersion);
                     fileVersion.Add(productVersion);
