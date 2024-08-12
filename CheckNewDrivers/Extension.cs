@@ -12,6 +12,11 @@ namespace CheckNewDrivers
                 return initialValue;
             }
 
+            if (items is IList<T> list && list.Count > 0)
+            {
+                return list[0];
+            }
+
             using (IEnumerator<T> enumerator = items.GetEnumerator())
             {
                 return enumerator.MoveNext() ? enumerator.Current : initialValue;

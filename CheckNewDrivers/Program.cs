@@ -111,7 +111,7 @@ namespace CheckNewDrivers
             }
         }
 
-        private static Driver GetDriverVersion(string source)
+        private static Driver[] GetDriverVersion(string source)
         {
             const string selector = ".platform-logos";
             List<Driver> driversList = new List<Driver>();
@@ -123,7 +123,7 @@ namespace CheckNewDrivers
             }
 
             driversList.Sort(OrderByDescending);
-            return driversList.GetFirst();
+            return driversList.ToArray();
         }
 
         private static string GetProgressLine(int percentage)
@@ -234,32 +234,35 @@ namespace CheckNewDrivers
             try
             {
                 string source = webClient.DownloadString(url);
-                Driver productVersion = GetDriverVersion(source);
-                string[] fileVersions = GetFileVersions(Environment.CurrentDirectory);
-                string lastFileVersion = fileVersions.GetLast("00000");
 
-                if (productVersion == null || productVersion.IsEmpty())
+                Driver[] productVersionsArray = GetDriverVersion(source);
+                string[] fileVersionsArray = GetFileVersions(Environment.CurrentDirectory);
+
+                Driver firstProductVersion = productVersionsArray.GetFirst();
+                string lastFileVersion = fileVersionsArray.GetLast("00000");
+
+                if (firstProductVersion == null || firstProductVersion.IsEmpty())
                 {
                     Console.WriteLine("Unable to find new driver version.");
                 }
                 else
                 {
-                    if (fileVersions.Length > 1)
+                    if (fileVersionsArray?.Length > 1)
                     {
-                        ShowDriversList(fileVersions);
+                        ShowDriversList(fileVersionsArray);
                     }
 
                     Console.WriteLine($"Your Last Version: {lastFileVersion, 10}");
-                    Console.WriteLine($"New Version:  {productVersion.Version, 15}");
+                    Console.WriteLine($"New Version:  {firstProductVersion.Version, 15}");
 
-                    if (productVersion.CompareTo(lastFileVersion) < 1)
+                    if (firstProductVersion.CompareTo(lastFileVersion) < 1)
                     {
                         Console.WriteLine("You already have the LATEST drivers.");
                     }
                     else
                     {
                         Console.WriteLine("There is a NEW VERSION drivers!!!");
-                        DownloadFileDialog(url, productVersion);
+                        DownloadFileDialog(url, firstProductVersion);
                     }
                 }
             }
