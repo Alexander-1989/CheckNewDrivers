@@ -81,31 +81,27 @@ namespace CheckNewDrivers
             return fileVersion.ToArray();
         }
 
-        private static string FindHref(IDomElement element)
-        {
-            const string className = "mobile-only";
-
-            for (IDomElement current = element; current != null; current = current.NextElementSibling)
-            {
-                if (current.ClassName.Equals(className) && current.FirstElementChild.HasAttribute("href"))
-                {
-                    return current.FirstElementChild.GetAttribute("href");
-                }
-            }
-
-            return string.Empty;
-        }
-
         private static void GetContent(IDomElement element, List<Driver> driversList)
         {
-            const string prefix = "PC v";
+            string className = "mobile-only";
+            string prefix = "PC v";
             string content = element.InnerText;
 
             if (content.Contains(prefix) && !content.Contains("."))
             {
                 string name = "Motu";
                 string version = content.Replace(prefix, null);
-                string href = FindHref(element);
+                string href = string.Empty;
+
+                for (IDomElement currentElement = element; currentElement != null; currentElement = currentElement.NextElementSibling)
+                {
+                    if (currentElement.ClassName.Equals(className) && currentElement.FirstElementChild.HasAttribute("href"))
+                    {
+                        href = currentElement.FirstElementChild.GetAttribute("href");
+                        break;
+                    }
+                }
+
                 Driver driver = new Driver(name, version, href);
                 driversList.Add(driver);
             }
@@ -113,7 +109,7 @@ namespace CheckNewDrivers
 
         private static Driver[] GetDriverVersion(string source)
         {
-            const string selector = ".platform-logos";
+            string selector = ".platform-logos";
             List<Driver> driversList = new List<Driver>();
             CQ cq = new CQ(selector, source);
 
@@ -261,7 +257,10 @@ namespace CheckNewDrivers
                     }
                     else
                     {
+                        ConsoleColor lastForegroundColor = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("There is a NEW VERSION drivers!!!");
+                        Console.ForegroundColor = lastForegroundColor;
                         DownloadFileDialog(url, firstProductVersion);
                     }
                 }
