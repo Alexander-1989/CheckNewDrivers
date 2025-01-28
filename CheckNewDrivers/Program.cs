@@ -7,6 +7,9 @@ using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using CheckNewDrivers.Service;
+using CheckNewDrivers.Service.Serializer;
+using System.Drawing;
 
 namespace CheckNewDrivers
 {
@@ -14,6 +17,8 @@ namespace CheckNewDrivers
     {
         private static readonly WebClient webClient = new WebClient();
         private static readonly Configuration config = new Configuration();
+        private static readonly IntPtr HWND = NativeMethods.GetConsoleWindow();
+        private static string address = string.Empty;
 
         private static string GetRootAddress(string url)
         {
@@ -62,7 +67,7 @@ namespace CheckNewDrivers
             return b.CompareTo(a);
         }
 
-        private static string[] GetFileVersions(string path)
+        private static List<string> GetFileVersions(string path)
         {
             const string partOfName = "MOTU M Series";
             List<string> fileVersion = new List<string>();
@@ -78,7 +83,7 @@ namespace CheckNewDrivers
             }
 
             fileVersion.Sort(OrderByAscending);
-            return fileVersion.ToArray();
+            return fileVersion;
         }
 
         private static void GetContent(IDomElement element, List<Driver> driversList)
@@ -107,7 +112,7 @@ namespace CheckNewDrivers
             }
         }
 
-        private static Driver[] GetDriverVersion(string source)
+        private static List<Driver> GetDriverVersion(string source)
         {
             string selector = ".platform-logos";
             List<Driver> driversList = new List<Driver>();
@@ -119,7 +124,7 @@ namespace CheckNewDrivers
             }
 
             driversList.Sort(OrderByDescending);
-            return driversList.ToArray();
+            return driversList;
         }
 
         private static string GetProgressLine(int percentage)
@@ -231,8 +236,8 @@ namespace CheckNewDrivers
             {
                 string source = webClient.DownloadString(url);
 
-                Driver[] productVersionsArray = GetDriverVersion(source);
-                string[] fileVersionsArray = GetFileVersions(Environment.CurrentDirectory);
+                List<Driver> productVersionsArray = GetDriverVersion(source);
+                List<string> fileVersionsArray = GetFileVersions(Environment.CurrentDirectory);
 
                 Driver firstProductVersion = productVersionsArray.GetFirst();
                 string lastFileVersion = fileVersionsArray.GetLast("00000");
@@ -243,7 +248,7 @@ namespace CheckNewDrivers
                 }
                 else
                 {
-                    if (fileVersionsArray?.Length > 1)
+                    if (fileVersionsArray.Count > 1)
                     {
                         ShowDriversList(fileVersionsArray);
                     }
@@ -257,6 +262,7 @@ namespace CheckNewDrivers
                     }
                     else
                     {
+                        Console.Beep();
                         ConsoleColor lastForegroundColor = Console.ForegroundColor;
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("There is a NEW VERSION drivers!!!");
@@ -284,6 +290,8 @@ namespace CheckNewDrivers
                     Console.Write($"Waiting {i} seconds for Exit...");
                     Thread.Sleep(1000);
                 }
+
+                WriteProperties();
                 Environment.Exit(0);
             });
 
@@ -299,28 +307,44 @@ namespace CheckNewDrivers
                 SecurityProtocolType.Ssl3;
         }
 
+        private static void ReadProperties()
+        {
+            config.Read();
+            NativeMethods.SetWindowPos(
+                HWND,
+                NativeMethods.HWNDInsertAfter.HWND_TOP,
+                config.Properties.Location.X,
+                config.Properties.Location.Y,
+                config.Properties.Size.Width,
+                config.Properties.Size.Height,
+                NativeMethods.SWPFlags.SWP_SHOWWINDOW);
+            address = config.Properties.Address;
+            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.ForegroundColor);
+            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.BackgroundColor);
+        }
+
+        private static void WriteProperties()
+        {
+            NativeMethods.GetWindowRect(HWND, out RECT rectangle);
+            config.Properties.Location = rectangle.Location;
+            config.Properties.Size = rectangle.Size;
+            config.Properties.ForegroundColor = Console.ForegroundColor.ToString();
+            config.Properties.BackgroundColor = Console.BackgroundColor.ToString();
+            config.Write();
+        }
+
         private static void Main()
         {
-            string address = string.Empty;
             SetSecurityProtocol();
 
             try
             {
-                config.Read();
-                address = config.Properties.Address;
-                Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.ForegroundColor);
-                Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.BackgroundColor);
+                ReadProperties();
             }
             catch (Exception)
             {
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.BackgroundColor = ConsoleColor.Black;
-            }
-            finally
-            {
-                config.Properties.ForegroundColor = Console.ForegroundColor.ToString();
-                config.Properties.BackgroundColor = Console.BackgroundColor.ToString();
-                config.Write();
             }
 
             try
@@ -335,6 +359,7 @@ namespace CheckNewDrivers
 
             WaitForExit(5);
             Console.ReadKey();
+            WriteProperties();
         }
     }
 }

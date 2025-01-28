@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CheckNewDrivers
+namespace CheckNewDrivers.Service
 {
     internal static class Extension
     {

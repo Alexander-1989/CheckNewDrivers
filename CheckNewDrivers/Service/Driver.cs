@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CheckNewDrivers
+namespace CheckNewDrivers.Service
 {
     internal class Driver : IComparable<Driver>
     {

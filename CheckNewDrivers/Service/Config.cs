@@ -2,45 +2,16 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace CheckNewDrivers
+namespace CheckNewDrivers.Service.Serializer
 {
-    [Serializable]
-    public class Properties
-    {
-        public string Address { get; set; }
-        public string ForegroundColor { get; set; }
-        public string BackgroundColor { get; set; }
-
-        private const string defaultForegroundColor = "Gray";
-        private const string defaultBackgroundColor = "Black";
-        private const string defaultAddress = "https://motu.com/en-us/download/product/408/";
-
-        public Properties() : this(defaultAddress, defaultForegroundColor, defaultBackgroundColor) { }
-
-        public Properties(string address) : this(address, defaultForegroundColor, defaultBackgroundColor) { }
-
-        public Properties(string address, string foregroundColor) : this(address, foregroundColor, defaultBackgroundColor) { }
-
-        public Properties(string address, string foregroundColor, string backgroundColor)
-        {
-            Address = address;
-            ForegroundColor = foregroundColor;
-            BackgroundColor = backgroundColor;
-        }
-
-    }
-
     internal class Configuration
     {
         public Properties Properties { get; set; }
-        private const string defName = "Config.xml";
+        private const string defaultConfigName = "Config.xml";
         private readonly string fileName = null;
         private readonly XmlSerializer serrializer = new XmlSerializer(typeof(Properties));
 
-        public Configuration()
-        {
-            fileName = Path.Combine(Environment.CurrentDirectory, defName);
-        }
+        public Configuration() : this(defaultConfigName) { }
 
         public Configuration(string FileName)
         {
