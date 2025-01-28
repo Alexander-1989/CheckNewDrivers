@@ -20,7 +20,7 @@ namespace CheckNewDrivers.Service.Serializer
 
         public void Read()
         {
-            if (File.Exists(fileName))
+            if (FileExists)
             {
                 using (StreamReader streamReader = new StreamReader(fileName))
                 {
@@ -48,9 +48,6 @@ namespace CheckNewDrivers.Service.Serializer
             catch (Exception) { }
         }
 
-        public bool FileExists()
-        {
-            return File.Exists(fileName);
-        }
+        public bool FileExists => File.Exists(fileName);
     }
 }
