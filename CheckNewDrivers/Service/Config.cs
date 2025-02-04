@@ -18,18 +18,20 @@ namespace CheckNewDrivers.Service.Serializer
             fileName = Path.GetFullPath(FileName);
         }
 
-        public void Read()
+        public bool Read()
         {
             if (FileExists)
             {
                 using (StreamReader streamReader = new StreamReader(fileName))
                 {
                     Properties = serrializer.Deserialize(streamReader) as Properties;
+                    return true;
                 }
             }
             else
             {
                 Properties = new Properties();
+                return false;
             }
         }
 

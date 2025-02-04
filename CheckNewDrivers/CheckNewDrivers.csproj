@@ -45,7 +45,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Service\NativeMethods.cs" />
     <Compile Include="Service\Properties.cs" />
-    <Compile Include="Service\RECT.cs" />
+    <Compile Include="Service\Rectangle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

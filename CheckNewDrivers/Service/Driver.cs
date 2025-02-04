@@ -29,7 +29,7 @@ namespace CheckNewDrivers.Service
 
         public bool IsEmpty()
         {
-            return Version == null || Version.Length == 0 || Href == null || Href.Length == 0;
+            return string.IsNullOrEmpty(Version) || string.IsNullOrEmpty(Href);
         }
 
         public override string ToString()

@@ -1,9 +1,10 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Drawing;
+using System.Runtime.InteropServices;
 
-namespace System.Drawing
+namespace CheckNewDrivers.Service
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct RECT
+    public struct Rectangle
     {
         public int Left { get; set; }
         public int Top { get; set; }

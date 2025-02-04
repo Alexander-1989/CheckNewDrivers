@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using CheckNewDrivers.Service;
 using CheckNewDrivers.Service.Serializer;
-using System.Drawing;
 
 namespace CheckNewDrivers
 {
@@ -309,23 +308,26 @@ namespace CheckNewDrivers
 
         private static void ReadProperties()
         {
-            config.Read();
-            NativeMethods.SetWindowPos(
-                HWND,
-                NativeMethods.HWNDInsertAfter.HWND_TOP,
-                config.Properties.Location.X,
-                config.Properties.Location.Y,
-                config.Properties.Size.Width,
-                config.Properties.Size.Height,
-                NativeMethods.SWPFlags.SWP_SHOWWINDOW);
+            if (config.Read())
+            {
+                NativeMethods.SetWindowPos(
+                    HWND,
+                    NativeMethods.SWPInsertAfter.HWND_TOP,
+                    config.Properties.Location.X,
+                    config.Properties.Location.Y,
+                    config.Properties.Size.Width,
+                    config.Properties.Size.Height,
+                    NativeMethods.SWPFlags.SWP_SHOWWINDOW
+                    );
+                Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.ForegroundColor);
+                Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.BackgroundColor);
+            }
             address = config.Properties.Address;
-            Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.ForegroundColor);
-            Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.BackgroundColor);
         }
 
         private static void WriteProperties()
         {
-            NativeMethods.GetWindowRect(HWND, out RECT rectangle);
+            NativeMethods.GetWindowRect(HWND, out Rectangle rectangle);
             config.Properties.Location = rectangle.Location;
             config.Properties.Size = rectangle.Size;
             config.Properties.ForegroundColor = Console.ForegroundColor.ToString();
