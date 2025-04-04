@@ -16,7 +16,7 @@ namespace CheckNewDrivers
     {
         private static readonly WebClient webClient = new WebClient();
         private static readonly Configuration config = new Configuration();
-        private static readonly IntPtr HWND = NativeMethods.GetConsoleWindow();
+        private static readonly IntPtr hWnd = NativeMethods.GetConsoleWindow();
         private static string address = string.Empty;
 
         private static string GetRootAddress(string url)
@@ -261,7 +261,7 @@ namespace CheckNewDrivers
                     }
                     else
                     {
-                        Console.Beep();
+                        System.Media.SystemSounds.Beep.Play();
                         ConsoleColor lastForegroundColor = Console.ForegroundColor;
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("There is a NEW VERSION drivers!!!");
@@ -281,7 +281,7 @@ namespace CheckNewDrivers
             int top = Console.CursorTop;
             int left = Console.CursorLeft;
 
-            Task task = new Task(() =>
+            Task exitTask = new Task(() =>
             {
                 for (int i = seconds; i > 0; i--)
                 {
@@ -294,7 +294,7 @@ namespace CheckNewDrivers
                 Environment.Exit(0);
             });
 
-            task.Start();
+            exitTask.Start();
         }
 
         private static void SetSecurityProtocol()
@@ -310,15 +310,16 @@ namespace CheckNewDrivers
         {
             if (config.Read())
             {
-                NativeMethods.SetWindowPos(
-                    HWND,
-                    NativeMethods.SWPInsertAfter.HWND_TOP,
+                NativeMethods.SetWindowPos
+				(
+                    hWnd,
+                    NativeMethods.SWPInsertAfter.TOP,
                     config.Properties.Location.X,
                     config.Properties.Location.Y,
                     config.Properties.Size.Width,
                     config.Properties.Size.Height,
-                    NativeMethods.SWPFlags.SWP_SHOWWINDOW
-                    );
+                    NativeMethods.SWPFlags.SHOWWINDOW
+				);
                 Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.ForegroundColor);
                 Console.BackgroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.BackgroundColor);
             }
@@ -327,7 +328,7 @@ namespace CheckNewDrivers
 
         private static void WriteProperties()
         {
-            NativeMethods.GetWindowRect(HWND, out Rectangle rectangle);
+            NativeMethods.GetWindowRect(hWnd, out Rectangle rectangle);
             config.Properties.Location = rectangle.Location;
             config.Properties.Size = rectangle.Size;
             config.Properties.ForegroundColor = Console.ForegroundColor.ToString();

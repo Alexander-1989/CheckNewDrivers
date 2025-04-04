@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace CheckNewDrivers.Service
@@ -8,29 +7,29 @@ namespace CheckNewDrivers.Service
     {
         internal enum SWPInsertAfter
         {
-            HWND_NOTOPMOST  = -2,
-            HWND_TOPMOST    = -1,
-            HWND_TOP        = 0,
-            HWND_BOTTOM     = 1,
+            NOTOPMOST   = -2,
+            TOPMOST     = -1,
+            TOP         =  0,
+            BOTTOM      =  1,
         }
 
         internal enum SWPFlags : uint
         {
-            SWP_ASYNCWINDOWPOS = 0x4000,
-            SWP_DEFERERASE      = 0x2000,
-            SWP_DRAWFRAME       = 0x0020,
-            SWP_FRAMECHANGED    = 0x0020,
-            SWP_HIDEWINDOW      = 0x0080,
-            SWP_NOACTIVATE      = 0x0010,
-            SWP_NOCOPYBITS      = 0x0100,
-            SWP_NOMOVE          = 0x0002,
-            SWP_NOOWNERZORDER   = 0x0200,
-            SWP_NOREDRAW        = 0x0008,
-            SWP_NOREPOSITION    = 0x0200,
-            SWP_NOSENDCHANGING  = 0x0400,
-            SWP_NOSIZE          = 0x0001,
-            SWP_NOZORDER        = 0x0004,
-            SWP_SHOWWINDOW      = 0x0040
+            ASYNCWINDOWPOS 	= 0x4000,
+            DEFERERASE      = 0x2000,
+            DRAWFRAME       = 0x0020,
+            FRAMECHANGED    = 0x0020,
+            HIDEWINDOW      = 0x0080,
+            NOACTIVATE      = 0x0010,
+            NOCOPYBITS      = 0x0100,
+            NOMOVE          = 0x0002,
+            NOOWNERZORDER   = 0x0200,
+            NOREDRAW        = 0x0008,
+            NOREPOSITION    = 0x0200,
+            NOSENDCHANGING  = 0x0400,
+            NOSIZE          = 0x0001,
+            NOZORDER        = 0x0004,
+            SHOWWINDOW      = 0x0040
         }
 
         [DllImport("kernel32.dll", EntryPoint = "GetConsoleWindow")]
