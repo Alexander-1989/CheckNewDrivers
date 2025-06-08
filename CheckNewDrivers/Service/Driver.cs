@@ -1,4 +1,5 @@
 ﻿using System;
+using CheckNewDrivers.Service.Utilities;
 
 namespace CheckNewDrivers.Service
 {
@@ -55,7 +56,7 @@ namespace CheckNewDrivers.Service
                 throw new ArgumentNullException("String is Null");
             }
 
-            int minLength = Min(versionA.Length, versionB.Length);
+            int minLength = Utility.Min(versionA.Length, versionB.Length);
 
             unsafe
             {
@@ -82,11 +83,6 @@ namespace CheckNewDrivers.Service
             }
 
             return 0;
-        }
-
-        private int Min(int x, int y)
-        {
-            return x < y ? x : y;
         }
     }
 }
