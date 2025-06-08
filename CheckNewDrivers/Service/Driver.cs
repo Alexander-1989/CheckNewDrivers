@@ -7,6 +7,7 @@ namespace CheckNewDrivers.Service
         public string Name { get; }
         public string Version { get; }
         public string Href { get; }
+        private const char EndChar = '\0';
 
         public Driver() : this(string.Empty, string.Empty, string.Empty) { }
 
@@ -19,12 +20,22 @@ namespace CheckNewDrivers.Service
 
         public int CompareTo(Driver other)
         {
-            return CompareVersions(Version, other.Version);
+            return CompareTo(other.Version);
         }
 
         public int CompareTo(string version)
         {
             return CompareVersions(Version, version);
+        }
+
+        public bool Compare(Driver other)
+        {
+            return Compare(other.Version);
+        }
+
+        public bool Compare(string version)
+        {
+            return CompareVersions(Version, version) > 0;
         }
 
         public bool IsEmpty()
@@ -39,35 +50,43 @@ namespace CheckNewDrivers.Service
 
         protected virtual int CompareVersions(string versionA, string versionB)
         {
+            if (versionA == null || versionB == null)
+            {
+                throw new ArgumentNullException("String is Null");
+            }
+
+            int minLength = Min(versionA.Length, versionB.Length);
+
             unsafe
             {
-                if (versionA == null || versionB == null)
+                fixed (char* stringA = versionA, stringB = versionB)
                 {
-                    throw new ArgumentNullException();
-                }
+                    char* ch1 = stringA + versionA.Length - minLength;
+                    char* ch2 = stringB + versionB.Length - minLength;
 
-                int lengthA = versionA.Length;
-                int lengthB = versionB.Length;
-                int minLength = lengthA < lengthB ? lengthA : lengthB;
-
-                fixed (char* str1 = versionA, str2 = versionB)
-                {
-                    for (int i = lengthA - minLength, j = lengthB - minLength; i < lengthA; i++, j++)
+                    while (*ch1 != EndChar && *ch2 != EndChar)
                     {
-                        char charA = *(str1 + i);
-                        char charB = *(str2 + j);
-                        if (charA < charB)
+                        if (*ch1 < *ch2)
                         {
                             return -1;
                         }
-                        else if (charA > charB)
+                        else if (*ch1 > *ch2)
                         {
                             return 1;
                         }
+
+                        ch1++;
+                        ch2++;
                     }
                 }
             }
+
             return 0;
+        }
+
+        private int Min(int x, int y)
+        {
+            return x < y ? x : y;
         }
     }
 }

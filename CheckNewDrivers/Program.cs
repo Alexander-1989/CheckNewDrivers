@@ -255,11 +255,7 @@ namespace CheckNewDrivers
                     Console.WriteLine($"Your Last Version: {lastFileVersion, 10}");
                     Console.WriteLine($"New Version:  {firstProductVersion.Version, 15}");
 
-                    if (firstProductVersion.CompareTo(lastFileVersion) < 1)
-                    {
-                        Console.WriteLine("You already have the LATEST drivers.");
-                    }
-                    else
+                    if (firstProductVersion.Compare(lastFileVersion))
                     {
                         System.Media.SystemSounds.Beep.Play();
                         ConsoleColor lastForegroundColor = Console.ForegroundColor;
@@ -267,6 +263,10 @@ namespace CheckNewDrivers
                         Console.WriteLine("There is a NEW VERSION drivers!!!");
                         Console.ForegroundColor = lastForegroundColor;
                         DownloadFileDialog(url, firstProductVersion);
+                    }
+                    else
+                    {
+                        Console.WriteLine("You already have the LATEST drivers.");
                     }
                 }
             }
