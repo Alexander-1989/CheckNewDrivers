@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Drawing;
 
 namespace CheckNewDrivers.Service
 {
     [Serializable]
     public class Properties
     {
-        public Point Location { get; set; }
-        public Size Size { get; set; }
+        public Rectangle Rectangle { get; set; }
         public string Address { get; set; }
         public string ForegroundColor { get; set; }
         public string BackgroundColor { get; set; }
@@ -24,8 +22,13 @@ namespace CheckNewDrivers.Service
 
         public Properties(int x, int y, int width, int height, string address, string foregroundColor, string backgroundColor)
         {
-            Location = new Point(x, y);
-            Size = new Size(width, height);
+            Rectangle = new Rectangle()
+            {
+                Left = x,
+                Top = y,
+                Right = x + width,
+                Bottom = y + height
+            };
             Address = address;
             ForegroundColor = foregroundColor;
             BackgroundColor = backgroundColor;

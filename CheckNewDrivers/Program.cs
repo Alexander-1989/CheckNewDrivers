@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using CheckNewDrivers.Service;
+using CheckNewDrivers.Service.Utilities;
 using CheckNewDrivers.Service.Serializer;
 
 namespace CheckNewDrivers
@@ -38,32 +39,17 @@ namespace CheckNewDrivers
             return path.StartsWith('/') ? rootAddress + path : rootAddress + '/' + path;
         }
 
-        private static bool IsDigit(char ch)
-        {
-            return ch >= '0' && ch <= '9';
-        }
-
         private static string NormalizeVersion(string version)
         {
             StringBuilder result = new StringBuilder(10);
             foreach (char ch in version)
             {
-                if (IsDigit(ch))
+                if (Utility.IsDigit(ch))
                 {
                     result.Append(ch);
                 }
             }
             return result.ToString();
-        }
-
-        private static int OrderByAscending<T>(T a, T b) where T : IComparable<T>
-        {
-            return a.CompareTo(b);
-        }
-
-        private static int OrderByDescending<T>(T a, T b) where T : IComparable<T>
-        {
-            return b.CompareTo(a);
         }
 
         private static List<string> GetFileVersions(string path)
@@ -81,7 +67,7 @@ namespace CheckNewDrivers
                 }
             }
 
-            fileVersion.Sort(OrderByAscending);
+            fileVersion.Sort(Utility.OrderByAscending);
             return fileVersion;
         }
 
@@ -122,7 +108,7 @@ namespace CheckNewDrivers
                 GetContent(item.NextElementSibling, driversList);
             }
 
-            driversList.Sort(OrderByDescending);
+            driversList.Sort(Utility.OrderByDescending);
             return driversList;
         }
 
@@ -297,15 +283,6 @@ namespace CheckNewDrivers
             exitTask.Start();
         }
 
-        private static void SetSecurityProtocol()
-        {
-            ServicePointManager.SecurityProtocol =
-                SecurityProtocolType.Tls |
-                SecurityProtocolType.Tls11 |
-                SecurityProtocolType.Tls12 |
-                SecurityProtocolType.Ssl3;
-        }
-
         private static void ReadProperties()
         {
             if (config.Read())
@@ -314,10 +291,10 @@ namespace CheckNewDrivers
 				(
                     hWnd,
                     NativeMethods.SWPInsertAfter.TOP,
-                    config.Properties.Location.X,
-                    config.Properties.Location.Y,
-                    config.Properties.Size.Width,
-                    config.Properties.Size.Height,
+                    config.Properties.Rectangle.X,
+                    config.Properties.Rectangle.Y,
+                    config.Properties.Rectangle.Width,
+                    config.Properties.Rectangle.Height,
                     NativeMethods.SWPFlags.SHOWWINDOW
 				);
                 Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), config.Properties.ForegroundColor);
@@ -329,8 +306,7 @@ namespace CheckNewDrivers
         private static void WriteProperties()
         {
             NativeMethods.GetWindowRect(hWnd, out Rectangle rectangle);
-            config.Properties.Location = rectangle.Location;
-            config.Properties.Size = rectangle.Size;
+            config.Properties.Rectangle = rectangle;
             config.Properties.ForegroundColor = Console.ForegroundColor.ToString();
             config.Properties.BackgroundColor = Console.BackgroundColor.ToString();
             config.Write();
@@ -338,7 +314,7 @@ namespace CheckNewDrivers
 
         private static void Main()
         {
-            SetSecurityProtocol();
+            Utility.SetSecurityProtocol();
 
             try
             {

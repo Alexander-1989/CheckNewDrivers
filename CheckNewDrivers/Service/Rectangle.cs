@@ -11,8 +11,17 @@ namespace CheckNewDrivers.Service
         public int Right { get; set; }
         public int Bottom { get; set; }
 
-        public Point Location => new Point(Left, Top);
+        public int X => Left;
 
-        public Size Size => new Size(Right - Left, Bottom - Top);
+        public int Y => Top;
+
+        public int Width => Right - Left;
+
+        public int Height => Bottom - Top;
+
+        public Point Location => new Point(X, Y);
+
+        public Size Size => new Size(Width, Height);
+
     }
 }
